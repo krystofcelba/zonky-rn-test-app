@@ -1,0 +1,12 @@
+{
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "all",
+    "prettier.eslintIntegration": true,
+    "files.associations": {
+        "*.js": "javascriptreact"
+    },
+    "editor.formatOnSave": true,
+    "javascript.format.enable": false,
+    "javascript.validate.enable": false,
+    "json.format.enable": false
+}
