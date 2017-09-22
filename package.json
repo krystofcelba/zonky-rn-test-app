@@ -4,7 +4,8 @@
     "private": true,
     "scripts": {
         "start": "node node_modules/react-native/local-cli/cli.js start",
-        "test": "jest"
+        "test": "jest",
+        "remotedev": "remotedev --hostname=localhost --port=8000 --injectserver=reactnative"
     },
     "dependencies": {
         "@shoutem/ui": "^0.21.3",
