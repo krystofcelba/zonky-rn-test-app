@@ -1,11 +1,14 @@
 import { delay } from 'redux-saga';
-import { put, takeLatest, select, call, fork, take, race } from 'redux-saga/effects';
+import { put, select, call, fork, take, race } from 'redux-saga/effects';
 import {
   LOGIN,
   LOGOUT,
   storeAuthToken,
+  logout,
   loginSuccess as loginSuccessAction,
   resetNavigatorToRoute,
+  updateUsername,
+  updatePassword,
 } from '../actions/auth';
 
 import API from './api';
@@ -13,46 +16,35 @@ import API from './api';
 function* loginSuccess() {
   yield put(loginSuccessAction());
   yield put(resetNavigatorToRoute('Main'));
+  yield put(updateUsername(''));
+  yield put(updatePassword(''));
 }
 
-function* fetchToken(refresh) {
-  let body = '';
-  if (refresh) {
-    const token = yield select(state => state.auth.token);
-    body = `grant_type=refresh_token&refresh_token=${token.refresh_token}&scope=${token.scope}`;
-  } else {
-    const { username, password } = yield select(state => state.auth.credentials);
-    body = `username=${username}&password=${password}&grant_type=password&scope=SCOPE_APP_WEB`;
-  }
-  const headers = new Headers();
-  headers.set('Content-Type', 'application/x-www-form-urlencoded');
-  headers.set('Accept', 'application/json');
-  headers.set('Authorization', 'Basic d2ViOndlYg==');
-  const resp = yield API.post('/oauth/token', null, { headers, body });
-  if (resp.ok) {
-    return yield resp.json();
-  }
-  throw resp;
-}
-
-function* authorize(refresh) {
+function* authorize(isUserLogged) {
   try {
-    const token = yield call(fetchToken, refresh);
+    let token = null;
+    if (!isUserLogged) {
+      const { username, password } = yield select(state => state.auth.credentials);
+      token = yield call(API.authorizeUser, username, password);
+      yield call(loginSuccess);
+    } else {
+      const oldToken = yield select(state => state.auth.token);
+      token = yield call(API.refreshToken, oldToken);
+    }
     yield put(storeAuthToken(token));
-    if (!refresh) yield call(loginSuccess);
     return token;
   } catch (e) {
     console.log(e);
-    yield put(storeAuthToken(null));
+    yield put(logout());
     return null;
   }
 }
 
-function* authorizeLoop(storedToken) {
+function* tokenRefreshingLoop(storedToken) {
   let token = storedToken;
   while (true) {
-    const refresh = token != null;
-    token = yield call(authorize, refresh);
+    const isUserLogged = token != null;
+    token = yield call(authorize, isUserLogged);
     if (token == null) return;
 
     const expiresInMS = token.expires_in * 1000;
@@ -60,28 +52,23 @@ function* authorizeLoop(storedToken) {
   }
 }
 
-function* authentication() {
+function* authenticationFlow() {
   const storedToken = yield select(state => state.auth.token);
 
   while (true) {
     if (!storedToken) yield take(LOGIN);
 
-    const { signOutAction } = yield race({
-      signOutAction: take(LOGOUT),
-      authLoop: call(authorizeLoop, storedToken),
+    const { logoutAction } = yield race({
+      logoutAction: take(LOGOUT),
+      authLoop: call(tokenRefreshingLoop, storedToken),
     });
 
-    if (signOutAction) {
+    if (logoutAction) {
       yield put(storeAuthToken, null);
     }
   }
 }
 
-function* startLoggingOut() {
-  yield put(resetNavigatorToRoute('Login'));
-}
-
 export default function* root() {
-  yield fork(authentication);
-  yield takeLatest(LOGOUT, startLoggingOut);
+  yield fork(authenticationFlow);
 }
