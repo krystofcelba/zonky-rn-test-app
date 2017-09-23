@@ -1,8 +1,17 @@
-import { SAVE_AUTH_TOKEN } from '../actions/actionTypes';
+import { UPDATE_USERNAME, UPDATE_PASSWORD, STORE_AUTH_TOKEN } from '../actions/auth';
 
-const authReducer = (state = { token: null }, action) => {
+const authReducer = (
+  state = { token: null, credentials: { username: '', password: '' } },
+  action,
+) => {
   switch (action.type) {
-    case SAVE_AUTH_TOKEN: {
+    case UPDATE_USERNAME: {
+      return { ...state, credentials: { ...state.credentials, username: action.username } };
+    }
+    case UPDATE_PASSWORD: {
+      return { ...state, credentials: { ...state.credentials, password: action.password } };
+    }
+    case STORE_AUTH_TOKEN: {
       return { ...state, token: action.token };
     }
     default: {

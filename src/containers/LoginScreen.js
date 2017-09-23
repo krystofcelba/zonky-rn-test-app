@@ -9,30 +9,23 @@ import type {
 } from 'react-navigation/src/TypeDefinition';
 import { FormLabel, FormInput, Card, Button } from 'react-native-elements';
 
-import { authenticate } from '../redux/actions/auth';
+import { updateUsername, updatePassword, login } from '../redux/actions/auth';
 import * as Strings from '../constants/strings';
 
 type Props = {
   navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
+  updateUsername: (username: string) => {},
+  updatePassword: (password: string) => {},
+  login: () => {},
 };
 
-type State = {
-  username: string,
-  password: string,
-};
-
-class LoginScreen extends React.PureComponent<void, Props, State> {
+class LoginScreen extends React.PureComponent<void, Props, void> {
   static navigationOptions = {
     title: 'Login Screen',
   };
 
-  state = {
-    username: '',
-    password: '',
-  };
-
   _onLoginButtonPress = () => {
-    this.props.authenticate();
+    this.props.login();
   };
 
   render() {
@@ -40,14 +33,14 @@ class LoginScreen extends React.PureComponent<void, Props, State> {
       <View style={styles.container}>
         <Card>
           <FormLabel>{Strings.USERNAME}</FormLabel>
-          <FormInput onChangeText={username => this.setState({ username })} />
+          <FormInput onChangeText={this.props.updateUsername} />
           <FormLabel>{Strings.PASSWORD}</FormLabel>
-          <FormInput onChangeText={password => this.setState({ password })} />
+          <FormInput onChangeText={this.props.updatePassword} />
           <Button
             buttonStyle={{ marginTop: 20 }}
             backgroundColor="#03A9F4"
             title={Strings.SIGN_IN}
-            onPress={() => this.props.authenticate()}
+            onPress={this._onLoginButtonPress}
           />
         </Card>
       </View>
@@ -63,6 +56,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = () => ({});
-const mapDispatchToProps = { authenticate };
+const mapDispatchToProps = { updateUsername, updatePassword, login };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
