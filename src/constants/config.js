@@ -1,2 +1,3 @@
-const DEV_ZONKY_USERNAME = '';
-const DEV_ZONKY_PASSWORD = '';
+export const DEV_ZONKY_USERNAME = '';
+export const DEV_ZONKY_PASSWORD = '';
+
