@@ -4,7 +4,6 @@ import type { NavigationResetAction } from 'react-navigation/src/TypeDefinition'
 
 export const UPDATE_USERNAME = 'UPDATE_USERNAME';
 export const UPDATE_PASSWORD = 'UPDATE_PASSWORD';
-export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const STORE_AUTH_TOKEN = 'STORE_AUTH_TOKEN';
@@ -14,11 +13,6 @@ export const LOGOUT = 'LOGOUT';
 export type AuthAction =
   | { type: typeof UPDATE_USERNAME, username: string }
   | { type: typeof UPDATE_PASSWORD, password: string }
-  | {
-      type: typeof LOGIN_REQUEST,
-      username: string,
-      password: string,
-    }
   | {
       type: typeof LOGIN_SUCCESS,
       token: {},
@@ -37,12 +31,6 @@ export const updateUsername = (username: string): AuthAction => ({
 
 export const updatePassword = (password: string): AuthAction => ({
   type: UPDATE_PASSWORD,
-  password,
-});
-
-export const loginRequest = (username: string, password: string): AuthAction => ({
-  type: LOGIN_REQUEST,
-  username,
   password,
 });
 

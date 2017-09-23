@@ -14,8 +14,8 @@
 .*/Libraries/react-native/React.js
 .*/Libraries/react-native/ReactNative.js
 
-; Ignore react-navigation tests.
-.*/node_modules/react-navigation/.*/__tests__/.*
+ ; react-navigation isn't compatible with the newest flow version, ignore it         
+ .\*/node_modules/react-navigation\* 
 
 [include]
 

@@ -13,7 +13,8 @@ import {
 
 import API from './api';
 
-function* loginSuccess() {
+function* loginSuccess(token) {
+  yield put(storeAuthToken(token));
   yield put(loginSuccessAction());
   yield put(resetNavigatorToRoute('Main'));
   yield put(updateUsername(''));
@@ -26,12 +27,12 @@ function* authorize(isUserLogged) {
     if (!isUserLogged) {
       const { username, password } = yield select(state => state.auth.credentials);
       token = yield call(API.authorizeUser, username, password);
-      yield call(loginSuccess);
+      yield call(loginSuccess, token);
     } else {
       const oldToken = yield select(state => state.auth.token);
       token = yield call(API.refreshToken, oldToken);
+      yield put(storeAuthToken(token));
     }
-    yield put(storeAuthToken(token));
     return token;
   } catch (e) {
     console.log(e);
@@ -64,7 +65,7 @@ function* authenticationFlow() {
     });
 
     if (logoutAction) {
-      yield put(storeAuthToken, null);
+      yield put(storeAuthToken(null));
     }
   }
 }
