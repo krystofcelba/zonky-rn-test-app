@@ -5,13 +5,41 @@ import { logout } from '../actions/auth';
 
 // const BASE_URL = 'https://private-anon-b35ae4e59e-zonky.apiary-mock.com';
 const BASE_URL = 'https://api.zonky.cz';
+const PAGE_SIZE = 20;
+
+type Photo = { name: string, url: string };
+
+export type Loan = {
+  id: number,
+  url?: string,
+  name: string,
+  story?: string,
+  purpose: string,
+  photos: Photo[],
+  nickName: string,
+  termInMonths: number,
+  interestRate: number,
+  rating: string,
+  topped: boolean,
+  amount: number,
+  remainingInvestment: number,
+  investmentRate: number,
+  covered: boolean,
+  datePublished: string,
+  published: boolean,
+  deadline: string,
+  investmentsCount: number,
+  questionsCount: number,
+  region: number,
+  mainIncomeType: string,
+};
 
 function* authMiddleware(req, next) {
-  const authToken = yield select(state => state.auth.token);
+  const token = yield select(state => state.auth.token);
   const headers = req.headers || new Headers();
 
-  if (authToken !== null) {
-    headers.set('Authorization', `Bearer ${authToken}`);
+  if (token !== null) {
+    headers.set('Authorization', `Bearer ${token.access_token}`);
   }
   const res = yield next(new Request(req, { headers }));
 
@@ -24,13 +52,12 @@ function* authMiddleware(req, next) {
 const api = new API(BASE_URL).use(authMiddleware);
 
 function* requestAuthToken(body) {
-  const resp = yield api.post('/oauth/token', null, {
+  const resp = yield api.post('/oauth/token', body, {
     headers: new Headers({
       'Content-Type': 'application/x-www-form-urlencoded',
       Accept: 'application/json',
       Authorization: 'Basic d2ViOndlYg==',
     }),
-    body,
   });
 
   if (resp.ok) {
@@ -49,4 +76,18 @@ function* refreshToken(token) {
   return yield call(requestAuthToken, body);
 }
 
-export default { authorizeUser, refreshToken };
+function* fetchLoans(page: number): Loan[] {
+  const resp = yield api.get('/loans/marketplace', null, {
+    headers: new Headers({
+      'X-Page': page,
+      'X-Size': PAGE_SIZE,
+    }),
+  });
+
+  if (resp.ok) {
+    return yield resp.json();
+  }
+  throw yield resp.json();
+}
+
+export default { authorizeUser, refreshToken, fetchLoans };

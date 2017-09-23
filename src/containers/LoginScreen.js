@@ -35,7 +35,7 @@ class LoginScreen extends React.PureComponent<void, Props, void> {
           <FormLabel>{Strings.USERNAME}</FormLabel>
           <FormInput onChangeText={this.props.updateUsername} />
           <FormLabel>{Strings.PASSWORD}</FormLabel>
-          <FormInput onChangeText={this.props.updatePassword} />
+          <FormInput onChangeText={this.props.updatePassword} secureTextEntry />
           <Button
             buttonStyle={{ marginTop: 20 }}
             backgroundColor="#03A9F4"

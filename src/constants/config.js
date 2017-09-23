@@ -1,0 +1,2 @@
+const DEV_ZONKY_USERNAME = '';
+const DEV_ZONKY_PASSWORD = '';
