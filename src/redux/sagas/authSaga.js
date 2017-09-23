@@ -6,6 +6,7 @@ import {
   storeAuthToken,
   logout,
   loginSuccess as loginSuccessAction,
+  loginFailure,
   resetNavigatorToRoute,
   updateUsername,
   updatePassword,
@@ -36,6 +37,7 @@ function* authorize(isUserLogged) {
     return token;
   } catch (e) {
     console.log(e);
+    yield put(loginFailure(e));
     yield put(logout());
     return null;
   }

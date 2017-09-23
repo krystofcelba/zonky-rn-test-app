@@ -15,10 +15,10 @@ export type AuthAction =
   | { type: typeof UPDATE_PASSWORD, password: string }
   | {
       type: typeof LOGIN_SUCCESS,
-      token: {},
     }
   | {
       type: typeof LOGIN_FAILURE,
+      error: {},
     }
   | { type: typeof LOGIN }
   | { type: typeof LOGOUT }
@@ -34,13 +34,13 @@ export const updatePassword = (password: string): AuthAction => ({
   password,
 });
 
-export const loginSuccess = (token: {}): AuthAction => ({
+export const loginSuccess = (): AuthAction => ({
   type: LOGIN_SUCCESS,
-  token,
 });
 
-export const loginFailure = (): AuthAction => ({
+export const loginFailure = (error: {}): AuthAction => ({
   type: LOGIN_FAILURE,
+  error,
 });
 
 export const login = (): AuthAction => ({
