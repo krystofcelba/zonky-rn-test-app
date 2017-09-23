@@ -1,11 +1,11 @@
 /* @flow */
 import React from 'react';
-import { Screen, Text } from '@shoutem/ui';
+import { View, Text } from 'react-native';
 
 const MainScreen = () => (
-  <Screen>
-    <Text>It works!</Text>
-  </Screen>
+  <View>
+    <Text>It works 0!</Text>
+  </View>
 );
 
 MainScreen.navigationOptions = {

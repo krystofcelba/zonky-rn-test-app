@@ -8,12 +8,15 @@
         "remotedev": "remotedev --hostname=localhost --port=8000 --injectserver=reactnative"
     },
     "dependencies": {
-        "@shoutem/ui": "^0.21.3",
+        "isomorphic-fetch": "^2.2.1",
         "react": "16.0.0-alpha.12",
         "react-native": "0.48.3",
+        "react-native-elements": "^0.17.0",
+        "react-native-vector-icons": "^4.4.0",
         "react-navigation": "^1.0.0-beta.11",
         "react-redux": "^5.0.6",
         "redux": "^3.7.2",
+        "redux-saga": "^0.15.6",
         "remote-redux-devtools": "^0.5.12"
     },
     "devDependencies": {
