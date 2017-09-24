@@ -5,12 +5,13 @@ import { View, Text, StyleSheet } from 'react-native';
 type Props = {
   title: string,
   value: string,
+  color: string,
 };
 
-const PropertyBox = ({ title, value }: Props) => (
+const PropertyBox = ({ title, value, color = 'black' }: Props) => (
   <View style={styles.container}>
-    <Text style={styles.title}>{title}</Text>
-    <Text style={styles.value}>{value}</Text>
+    <Text style={[styles.title, { color }]}>{title}</Text>
+    <Text style={[styles.value, { color }]}>{value}</Text>
   </View>
 );
 

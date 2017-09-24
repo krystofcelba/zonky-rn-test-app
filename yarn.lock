@@ -1507,6 +1507,10 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
+date-fns@2.0.0-alpha.6:
+  version "2.0.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.0.0-alpha.6.tgz#49b1f982b8cf1cb628a1cb477ea8fc61eefcc296"
+
 dateformat@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-2.2.0.tgz#4065e2013cf9fb916ddfd82efb506ad4c6769062"
@@ -4343,6 +4347,12 @@ react-native-elements@^0.17.0:
     prop-types "^15.5.8"
     react-native-side-menu "^1.0.2"
     react-native-tab-navigator "^0.3.4"
+
+"react-native-parallax-scroll-view@https://github.com/fungilation/react-native-parallax-scroll-view.git":
+  version "0.20.1"
+  resolved "https://github.com/fungilation/react-native-parallax-scroll-view.git#235d451e8056ea981c9b35757daa13d3730a73c6"
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-side-menu@^1.0.2:
   version "1.1.3"
