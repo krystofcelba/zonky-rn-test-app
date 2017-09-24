@@ -90,4 +90,6 @@ function* fetchLoans(page: number): Loan[] {
   throw yield resp.json();
 }
 
+export const fullUriForPath = path => `${BASE_URL}${path}`;
+
 export default { authorizeUser, refreshToken, fetchLoans };
