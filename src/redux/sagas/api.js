@@ -11,27 +11,13 @@ type Photo = { name: string, url: string };
 
 export type Loan = {
   id: number,
-  url?: string,
   name: string,
   story?: string,
-  purpose: string,
   photos: Photo[],
-  nickName: string,
   termInMonths: number,
   interestRate: number,
   rating: string,
-  topped: boolean,
   amount: number,
-  remainingInvestment: number,
-  investmentRate: number,
-  covered: boolean,
-  datePublished: string,
-  published: boolean,
-  deadline: string,
-  investmentsCount: number,
-  questionsCount: number,
-  region: number,
-  mainIncomeType: string,
 };
 
 function* authMiddleware(req, next) {
@@ -78,7 +64,7 @@ function* refreshToken(token) {
 
 function* fetchLoans(page: number): Loan[] {
   const resp = yield api.get(
-    '/loans/marketplace?fields=id,name,story,photos,interestRate,rating,termInMonths',
+    '/loans/marketplace?fields=id,name,story,photos,interestRate,rating,termInMonths,amount',
     null,
     {
       headers: new Headers({
