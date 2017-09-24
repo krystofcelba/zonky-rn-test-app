@@ -77,12 +77,16 @@ function* refreshToken(token) {
 }
 
 function* fetchLoans(page: number): Loan[] {
-  const resp = yield api.get('/loans/marketplace', null, {
-    headers: new Headers({
-      'X-Page': page,
-      'X-Size': PAGE_SIZE,
-    }),
-  });
+  const resp = yield api.get(
+    '/loans/marketplace?fields=id,name,story,photos,interestRate,rating,termInMonths',
+    null,
+    {
+      headers: new Headers({
+        'X-Page': page,
+        'X-Size': PAGE_SIZE,
+      }),
+    },
+  );
 
   if (resp.ok) {
     return yield resp.json();
