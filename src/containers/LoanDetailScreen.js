@@ -1,6 +1,6 @@
 /* @flow */
 import React from 'react';
-import { View, StyleSheet, ScrollView, Image, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Image, Text, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -14,10 +14,12 @@ import type {
 
 import type { Loan } from '../redux/sagas/api';
 import * as Strings from '../constants/strings';
+import * as Colors from '../constants/colors';
 import { percentage } from '../lib/utils';
 
 import NavBar from '../components/common/NavBar';
 import PropertyBox from '../components/common/PropertyBox';
+import LoanProgressView from '../components/common/LoanProgressView';
 
 const window = Dimensions.get('window');
 const PARALLAX_IMAGE_HEIGHT = 200;
@@ -30,7 +32,6 @@ type Props = {
 
 class LoanDetailScreen extends React.PureComponent<void, Props, void> {
   static navigationOptions = {
-    title: 'Loan',
     header: null,
   };
   render() {
@@ -38,7 +39,7 @@ class LoanDetailScreen extends React.PureComponent<void, Props, void> {
     return (
       <View style={styles.container}>
         <ParallaxScrollView
-          contentBackgroundColor="#e9e9ef"
+          contentBackgroundColor={Colors.SCREENS_BACKGROUND}
           parallaxHeaderHeight={PARALLAX_IMAGE_HEIGHT}
           renderBackground={() => (
             <View style={{ backgroundColor: 'transparent' }}>
@@ -54,20 +55,22 @@ class LoanDetailScreen extends React.PureComponent<void, Props, void> {
                   position: 'absolute',
                   top: 0,
                   width: window.width,
-                  backgroundColor: 'rgba(0,0,0,.5)',
+                  backgroundColor: Colors.PARALLAX_IMAGE_OVERLAY,
                   height: PARALLAX_IMAGE_HEIGHT,
                 }}
               />
             </View>
           )}
-          renderStickyHeader={() => <NavBar title="DETAIL" showBackButton={false} />}
+          renderStickyHeader={() => <NavBar />}
           stickyHeaderHeight={64}
         >
           <View style={styles.contentContainer}>
             <Text style={styles.title}>{loan.name.toUpperCase()}</Text>
-
             <Text style={styles.story}>{loan.story}</Text>
-            <View style={[styles.infoContainer, { justifyContent: 'space-around' }]}>
+            <LoanProgressView loan={loan} style={styles.progressContainer} />
+            <View
+              style={[styles.infoContainer, { justifyContent: 'space-around', marginBottom: 1 }]}
+            >
               <PropertyBox
                 title={Strings.INVESTORS_COUNT}
                 value={loan.investmentsCount}
@@ -127,13 +130,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 10,
   },
+  progressContainer: {
+    marginBottom: 5,
+  },
   infoContainer: {
-    backgroundColor: '#5dbd62',
+    backgroundColor: Colors.INFO_CONTAINER_BACKGROUND,
     padding: 5,
     justifyContent: 'space-between',
     flexDirection: 'row',
     paddingBottom: 10,
     paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
 });
 

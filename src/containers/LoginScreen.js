@@ -11,6 +11,8 @@ import { FormLabel, FormInput, Card, Button } from 'react-native-elements';
 
 import { updateUsername, updatePassword, login } from '../redux/actions/auth';
 import * as Strings from '../constants/strings';
+import * as Colors from '../constants/colors';
+import NavBar from '../components/common/NavBar';
 
 type Props = {
   navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
@@ -21,7 +23,7 @@ type Props = {
 
 class LoginScreen extends React.PureComponent<void, Props, void> {
   static navigationOptions = {
-    title: 'Login Screen',
+    header: <NavBar />,
   };
 
   _onLoginButtonPress = () => {
@@ -38,7 +40,7 @@ class LoginScreen extends React.PureComponent<void, Props, void> {
           <FormInput onChangeText={this.props.updatePassword} secureTextEntry />
           <Button
             buttonStyle={{ marginTop: 20 }}
-            backgroundColor="#03A9F4"
+            backgroundColor={Colors.BUTTON_BACKGROUND}
             title={Strings.SIGN_IN}
             onPress={this._onLoginButtonPress}
           />
@@ -50,6 +52,7 @@ class LoginScreen extends React.PureComponent<void, Props, void> {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 64,
     flex: 1,
     paddingVertical: 20,
   },

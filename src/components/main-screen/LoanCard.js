@@ -4,8 +4,10 @@ import { Card, Button } from 'react-native-elements';
 
 import type { Loan } from '../../redux/sagas/api';
 import * as Strings from '../../constants/strings';
+import * as Colors from '../../constants/colors';
 
 import PropertyBox from '../common/PropertyBox';
+import LoanProgressView from '../common/LoanProgressView';
 
 import { percentage } from '../../lib/utils';
 
@@ -28,17 +30,13 @@ class LoanCard extends React.PureComponent<void, Props, void> {
         <Text style={styles.subtitle} numberOfLines={4}>
           {loan.story}
         </Text>
+        <LoanProgressView loan={loan} style={styles.loanProgressView} />
         <Button
-          backgroundColor="#e75637"
+          backgroundColor={Colors.BUTTON_BACKGROUND}
           buttonStyle={styles.detailButton}
           title="DETAIL"
           onPress={this._onDetailButtonPress}
         />
-        <View style={styles.infoContainer}>
-          <PropertyBox title={Strings.RATING} value={loan.rating} />
-          <PropertyBox title={Strings.INTEREST_RATE} value={`${percentage(loan.interestRate)} %`} />
-          <PropertyBox title={Strings.REPAYMENT_PERIOD} value={`${loan.termInMonths} měs`} />
-        </View>
       </Card>
     );
   }
@@ -52,6 +50,9 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     height: 80,
+    marginBottom: 10,
+  },
+  loanProgressView: {
     marginBottom: 10,
   },
   detailButton: {},

@@ -25,7 +25,7 @@ const LOAN_CARD_HEIGHT = 402.5;
 
 class MainScreen extends React.PureComponent<void, Props, void> {
   static navigationOptions = {
-    header: <NavBar showBackButton={false} title="ZONKY" />,
+    header: <NavBar />,
   };
 
   componentDidMount() {

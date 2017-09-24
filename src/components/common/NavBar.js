@@ -7,24 +7,27 @@ import type {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Header } from 'react-native-elements';
 
+import * as Strings from '../../constants/strings';
+import * as Colors from '../../constants/colors';
+
 const NavBar = ({
-  title,
-  showBackButton = true,
+  title = Strings.NAVBAR_TITLE,
+  showBackButton = false,
   navigation,
 }: {
-  title: string,
+  title?: string,
   showBackButton: boolean,
   navigation: NavigationScreenProp<NavigationRoute, NavigationAction>,
 }) => (
   <Header
     statusBarProps={{ barStyle: 'light-content' }}
-    backgroundColor="#42b2bd"
+    backgroundColor={Colors.NAVBAR_BACKGROUND}
     leftComponent={
       showBackButton ? (
         <Icon name="ios-arrow-back" size={30} color="white" onPress={() => navigation.goBack} />
       ) : null
     }
-    centerComponent={{ text: title, style: { color: '#fff' } }}
+    centerComponent={{ text: title, style: { color: '#fff', fontSize: 15 } }}
   />
 );
 
