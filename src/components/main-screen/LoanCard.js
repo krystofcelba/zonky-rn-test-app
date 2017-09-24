@@ -17,7 +17,7 @@ type Props = {
 const LoanCard = ({ loan }: Props) => (
   <Card image={{ uri: fullUriForPath(loan.photos[0].url) }}>
     <Text style={styles.title}>{loan.name.toUpperCase()}</Text>
-    <Text style={styles.subtitle} numberOfLines={3}>
+    <Text style={styles.subtitle} numberOfLines={4}>
       {loan.story}
     </Text>
     <Button backgroundColor="#03A9F4" buttonStyle={styles.detailButton} title="DETAIL" />
@@ -30,15 +30,13 @@ const LoanCard = ({ loan }: Props) => (
 );
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   title: {
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 10,
   },
   subtitle: {
+    height: 80,
     marginBottom: 10,
   },
   detailButton: {},
