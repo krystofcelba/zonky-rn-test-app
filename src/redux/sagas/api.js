@@ -5,9 +5,7 @@ import { logout } from '../actions/auth';
 
 // const BASE_URL = 'https://private-anon-b35ae4e59e-zonky.apiary-mock.com';
 const BASE_URL = 'https://api.zonky.cz';
-const PAGE_SIZE = 10;
-
-const zonkyApi = axios.create({ baseURL: BASE_URL });
+const PAGE_SIZE = 20;
 
 type Photo = { name: string, url: string };
 
@@ -34,7 +32,17 @@ export type AuthToken = {
   scope: string,
 };
 
-function* authorizedGet(url, config = {}) {
+export function* get(path, config = {}) {
+  const resp = yield call(axios.get, `${BASE_URL}${path}`, config);
+  return resp.data;
+}
+
+export function* post(path, body, config = {}) {
+  const resp = yield call(axios.post, `${BASE_URL}${path}`, body, config);
+  return resp.data;
+}
+
+function* authorizedGet(path, config = {}) {
   const token = yield select(state => state.auth.token);
   let headers = config.headers || {};
   if (token !== null) {
@@ -42,19 +50,18 @@ function* authorizedGet(url, config = {}) {
   } else {
     put(logout);
   }
-  const resp = yield call(zonkyApi.get, url, { ...config, headers });
+  const resp = yield call(get, path, { ...config, headers });
   return resp;
 }
 
 export function* requestAuthToken(body: string) {
-  const resp = yield call(zonkyApi.post, '/oauth/token', body, {
+  const resp = yield call(post, '/oauth/token', body, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/json',
       Authorization: 'Basic d2ViOndlYg==',
     },
   });
-  return resp.data;
+  return resp;
 }
 
 export function* authorizeUser(username: string, password: string) {
@@ -74,7 +81,7 @@ export function* fetchLoans(page: number) {
     '/loans/marketplace?fields=id,name,story,photos,interestRate,rating,termInMonths,amount,investmentsCount,deadline,remainingInvestment',
     { headers: { 'X-Page': page, 'X-Size': PAGE_SIZE } },
   );
-  return resp.data;
+  return resp;
 }
 
 export const fullUriForPath = path => `${BASE_URL}${path}`;

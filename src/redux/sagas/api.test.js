@@ -5,6 +5,18 @@ import * as API from './api';
 const username = 'test';
 const password = 'test';
 
+it('posts provided body to /oauth/token/ endpoint', () => {
+  testSaga(API.requestAuthToken, '')
+    .next()
+    .call(API.post, '/oauth/token', '', {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: 'Basic d2ViOndlYg==',
+      },
+    })
+    .next()
+    .isDone();
+});
 
 it('calls requestAuthToken with username and password in form urlencoded POST body', () => {
   testSaga(API.authorizeUser, username, password)
