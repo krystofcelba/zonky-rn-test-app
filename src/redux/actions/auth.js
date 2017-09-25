@@ -2,6 +2,8 @@
 import { NavigationActions } from 'react-navigation';
 import type { NavigationResetAction } from 'react-navigation/src/TypeDefinition';
 
+import type { AuthToken } from '../sagas/api';
+
 export const UPDATE_USERNAME = 'UPDATE_USERNAME';
 export const UPDATE_PASSWORD = 'UPDATE_PASSWORD';
 export const LOGIN_SUCCESS = 'LOGIN_SUCESS';
@@ -22,7 +24,7 @@ export type AuthAction =
     }
   | { type: typeof LOGIN }
   | { type: typeof LOGOUT }
-  | { type: typeof STORE_AUTH_TOKEN, token: {} | null };
+  | { type: typeof STORE_AUTH_TOKEN, token: AuthToken | null };
 
 export const updateUsername = (username: string): AuthAction => ({
   type: UPDATE_USERNAME,
@@ -51,7 +53,7 @@ export const logout = (): AuthAction => ({
   type: LOGOUT,
 });
 
-export const storeAuthToken = (token: {} | null): AuthAction => ({
+export const storeAuthToken = (token: AuthToken | null): AuthAction => ({
   type: STORE_AUTH_TOKEN,
   token,
 });

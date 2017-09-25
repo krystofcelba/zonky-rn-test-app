@@ -21,6 +21,10 @@
         {
             "name": "feature/loan-detail-page",
             "base": "feature/marketplace-page"
+        },
+        {
+            "name": "feature/tests",
+            "base": "feature/loan-detail-page"
         }
     ]
 }

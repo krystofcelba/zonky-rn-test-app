@@ -4,7 +4,7 @@ import {
   fetchNextLoansPageSuccess,
   fetchNextLoansPageFailed,
 } from '../actions/loans';
-import API from './api';
+import * as API from './api';
 
 function* fetchNextLoansPage() {
   const currentPage = yield select(state => state.loans.page);

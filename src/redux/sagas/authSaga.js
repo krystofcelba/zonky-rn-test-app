@@ -12,7 +12,7 @@ import {
   updatePassword,
 } from '../actions/auth';
 
-import API from './api';
+import * as API from './api';
 
 function* loginSuccess(token) {
   yield put(storeAuthToken(token));

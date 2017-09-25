@@ -1,11 +1,13 @@
 import { put, select, call } from 'redux-saga/effects';
-import { API } from 'redux-saga-rest';
+import axios from 'axios';
 
 import { logout } from '../actions/auth';
 
 // const BASE_URL = 'https://private-anon-b35ae4e59e-zonky.apiary-mock.com';
 const BASE_URL = 'https://api.zonky.cz';
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
+
+const zonkyApi = axios.create({ baseURL: BASE_URL });
 
 type Photo = { name: string, url: string };
 
@@ -24,66 +26,55 @@ export type Loan = {
   remainingInvestment: number,
 };
 
-function* authMiddleware(req, next) {
+export type AuthToken = {
+  access_token: string,
+  token_type: string,
+  refresh_token: string,
+  expires_in: number,
+  scope: string,
+};
+
+function* authorizedGet(url, config = {}) {
   const token = yield select(state => state.auth.token);
-  const headers = req.headers || new Headers();
-
+  let headers = config.headers || {};
   if (token !== null) {
-    headers.set('Authorization', `Bearer ${token.access_token}`);
+    headers = { ...headers, Authorization: `Bearer ${token.access_token}` };
+  } else {
+    put(logout);
   }
-  const res = yield next(new Request(req, { headers }));
-
-  if (res.status === 401) {
-    yield put(logout());
-  }
-  return res;
+  const resp = yield call(zonkyApi.get, url, { ...config, headers });
+  return resp;
 }
 
-const api = new API(BASE_URL).use(authMiddleware);
-
-function* requestAuthToken(body) {
-  const resp = yield api.post('/oauth/token', body, {
-    headers: new Headers({
+export function* requestAuthToken(body) {
+  const resp = yield call(zonkyApi.post, '/oauth/token', body, {
+    headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Accept: 'application/json',
       Authorization: 'Basic d2ViOndlYg==',
-    }),
+    },
   });
-
-  if (resp.ok) {
-    return yield resp.json();
-  }
-  throw yield resp.json();
+  return resp.data;
 }
 
-function* authorizeUser(username, password) {
+export function* authorizeUser(username: string, password: string) {
   const body = `username=${username}&password=${password}&grant_type=password&scope=SCOPE_APP_WEB`;
   return yield call(requestAuthToken, body);
 }
 
-function* refreshToken(token) {
-  const body = `grant_type=refresh_token&refresh_token=${token.refresh_token}&scope=${token.scope}`;
+export function* refreshToken(storedToken: AuthToken) {
+  const body = `grant_type=refresh_token&refresh_token=${storedToken.refresh_token}&scope=${storedToken.scope}`;
   return yield call(requestAuthToken, body);
 }
 
-function* fetchLoans(page: number): Loan[] {
-  const resp = yield api.get(
+export function* fetchLoans(page: number) {
+  const resp = yield call(
+    // We actually don't have to call this endpoint with authorization I do it only for example.
+    authorizedGet,
     '/loans/marketplace?fields=id,name,story,photos,interestRate,rating,termInMonths,amount,investmentsCount,deadline,remainingInvestment',
-    null,
-    {
-      headers: new Headers({
-        'X-Page': page,
-        'X-Size': PAGE_SIZE,
-      }),
-    },
+    { headers: { 'X-Page': page, 'X-Size': PAGE_SIZE } },
   );
-
-  if (resp.ok) {
-    return yield resp.json();
-  }
-  throw yield resp.json();
+  return resp.data;
 }
 
 export const fullUriForPath = path => `${BASE_URL}${path}`;
-
-export default { authorizeUser, refreshToken, fetchLoans };
