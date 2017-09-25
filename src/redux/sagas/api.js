@@ -46,7 +46,7 @@ function* authorizedGet(url, config = {}) {
   return resp;
 }
 
-export function* requestAuthToken(body) {
+export function* requestAuthToken(body: string) {
   const resp = yield call(zonkyApi.post, '/oauth/token', body, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
