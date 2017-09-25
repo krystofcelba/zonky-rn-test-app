@@ -1,4 +1,6 @@
 /* @flow */
+import { format } from 'currency-formatter';
+
 export const USERNAME = 'Uživatelské jméno';
 export const PASSWORD = 'Heslo';
 export const SIGN_IN = 'Přihlásit se';
@@ -10,6 +12,7 @@ export const REPAYMENT_PERIOD = 'DOBA';
 export const INVESTORS_COUNT = 'INVESTOVALO';
 export const REMAINING_TIME = 'ZBÝVAJICÍ ČAS';
 
-// TODO: Localize amounts.
+const formatCzkAmount = (amount: number) => format(amount, { code: 'CZK', precision: 0 });
+
 export const loanProgressTitleFormatter = (invested: number, amount: number) =>
-  `Investováno ${invested} Kč z ${amount} Kč`;
+  `Investováno ${formatCzkAmount(invested)} z ${formatCzkAmount(amount)}`;

@@ -9,6 +9,7 @@
         "remotedev-revert": "remotedev --revert=reactnative"
     },
     "dependencies": {
+        "currency-formatter": "^1.3.0",
         "date-fns": "2.0.0-alpha.6",
         "isomorphic-fetch": "^2.2.1",
         "lodash": "^4.17.4",

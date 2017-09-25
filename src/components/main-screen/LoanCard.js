@@ -1,15 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Card, Button } from 'react-native-elements';
 
 import type { Loan } from '../../redux/sagas/api';
-import * as Strings from '../../constants/strings';
 import * as Colors from '../../constants/colors';
 
-import PropertyBox from '../common/PropertyBox';
 import LoanProgressView from '../common/LoanProgressView';
-
-import { percentage } from '../../lib/utils';
 
 type Props = {
   loan: Loan,
@@ -25,19 +21,15 @@ class LoanCard extends React.PureComponent<void, Props, void> {
   render() {
     const { loan } = this.props;
     return (
-      <Card image={{ uri: loan.photoUri }}>
-        <Text style={styles.title}>{loan.name.toUpperCase()}</Text>
-        <Text style={styles.subtitle} numberOfLines={4}>
-          {loan.story}
-        </Text>
-        <LoanProgressView loan={loan} style={styles.loanProgressView} />
-        <Button
-          backgroundColor={Colors.BUTTON_BACKGROUND}
-          buttonStyle={styles.detailButton}
-          title="DETAIL"
-          onPress={this._onDetailButtonPress}
-        />
-      </Card>
+      <TouchableOpacity onPress={this._onDetailButtonPress}>
+        <Card image={{ uri: loan.photoUri }}>
+          <Text style={styles.title}>{loan.name.toUpperCase()}</Text>
+          <Text style={styles.subtitle} numberOfLines={4}>
+            {loan.story}
+          </Text>
+          <LoanProgressView loan={loan} style={styles.loanProgressView} />
+        </Card>
+      </TouchableOpacity>
     );
   }
 }
@@ -53,7 +45,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   loanProgressView: {
-    marginBottom: 10,
+    marginBottom: 0,
   },
   detailButton: {},
   infoContainer: { justifyContent: 'space-between', flexDirection: 'row', marginTop: 10 },

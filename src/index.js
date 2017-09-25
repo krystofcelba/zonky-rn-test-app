@@ -1,7 +1,6 @@
 /* @flow */
 import React from 'react';
 import { Provider } from 'react-redux';
-// import AppWithNavigationState from './navigators/AppNavigator';
 import RootAppNavigator from './navigators/AppNavigator';
 
 import configureStore from './redux/store';
