@@ -12,6 +12,8 @@ export const REPAYMENT_PERIOD = 'DOBA';
 export const INVESTORS_COUNT = 'INVESTOVALO';
 export const REMAINING_TIME = 'ZBÝVAJICÍ ČAS';
 
+export const ERROR_ALERT_TITLE = 'Chyba!';
+
 const formatCzkAmount = (amount: number) => format(amount, { code: 'CZK', precision: 0 });
 
 export const loanProgressTitleFormatter = (invested: number, amount: number) =>

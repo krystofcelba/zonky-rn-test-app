@@ -36,7 +36,6 @@ export const fullUriForPath = path => `${BASE_URL}${path}`;
 
 export function* get(path, config = {}) {
   const resp = yield call(axios.get, fullUriForPath(path), config);
-
   return resp.data;
 }
 

@@ -1,44 +1,40 @@
 import { delay } from 'redux-saga';
-import { call, fork, put, race, select, take } from 'redux-saga/effects';
+import { call, fork, put, race, select, take, takeLatest } from 'redux-saga/effects';
 
-import {
-  LOGIN,
-  loginFailure,
-  loginSuccess as loginSuccessAction,
-  LOGOUT,
-  logout,
-  resetNavigatorToRoute,
-  storeAuthToken,
-  updatePassword,
-  updateUsername,
-} from '../actions/auth';
+import { actions, LOGIN, LOGOUT, LOGIN_SUCCESS, LOGIN_FAILURE } from '../reducers/auth';
 import * as API from './api';
 
-function* loginSuccess(token) {
-  yield put(storeAuthToken(token));
-  yield put(loginSuccessAction());
-  yield put(resetNavigatorToRoute('Main'));
-  yield put(updateUsername(''));
-  yield put(updatePassword(''));
+import {
+  actions as uiActions,
+  getLoginScreenUsernameInputText,
+  getLoginScreenPasswordInputText,
+} from '../reducers/ui';
+
+function* loginSuccess() {
+  yield put(uiActions.resetNavigatorToRoute('Main'));
+  yield put(uiActions.updateLoginScreenUsernameInput(''));
+  yield put(uiActions.updateLoginScreenPasswordInput(''));
 }
 
 function* authorize(isUserLogged) {
   try {
     let token = null;
     if (!isUserLogged) {
-      const { username, password } = yield select(state => state.auth.credentials);
+      const username = yield select(getLoginScreenUsernameInputText);
+      const password = yield select(getLoginScreenPasswordInputText);
       token = yield call(API.authorizeUser, username, password);
-      yield call(loginSuccess, token);
     } else {
       const oldToken = yield select(state => state.auth.token);
       token = yield call(API.refreshToken, oldToken);
-      yield put(storeAuthToken(token));
     }
+    yield put(actions.storeAuthToken(token));
+    if (!isUserLogged) yield put(actions.loginSuccess());
     return token;
   } catch (e) {
     console.log(e);
-    yield put(loginFailure(e));
-    yield put(logout());
+    yield put(uiActions.showErrorAlert(e.response.data.error_description));
+    yield put(actions.loginFailure(e));
+    yield put(actions.logout());
     return null;
   }
 }
@@ -67,11 +63,12 @@ function* authenticationFlow() {
     });
 
     if (logoutAction) {
-      yield put(storeAuthToken(null));
+      yield put(actions.storeAuthToken(null));
     }
   }
 }
 
 export default function* root() {
   yield fork(authenticationFlow);
+  yield takeLatest(LOGIN_SUCCESS, loginSuccess);
 }

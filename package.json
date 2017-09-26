@@ -16,6 +16,7 @@
     "lodash": "^4.17.4",
     "react": "16.0.0-alpha.12",
     "react-native": "0.48.4",
+    "react-native-dropdownalert": "^2.13.0",
     "react-native-elements": "^0.17.0",
     "react-native-parallax-scroll-view": "https://github.com/fungilation/react-native-parallax-scroll-view.git",
     "react-native-vector-icons": "^4.4.0",

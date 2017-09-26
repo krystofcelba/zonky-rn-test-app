@@ -1,6 +1,6 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects';
 
-import { FETCH_NEXT_LOANS_PAGE, fetchNextLoansPageFailed, fetchNextLoansPageSuccess } from '../actions/loans';
+import { actions, FETCH_NEXT_LOANS_PAGE } from '../reducers/loans';
 import * as API from './api';
 
 function* fetchNextLoansPage() {
@@ -8,10 +8,10 @@ function* fetchNextLoansPage() {
   const nextPage = currentPage + 1;
   try {
     const resp = yield call(API.fetchLoans, nextPage);
-    yield put(fetchNextLoansPageSuccess(resp, nextPage));
+    yield put(actions.fetchNextLoansPageSuccess(resp, nextPage));
   } catch (e) {
     console.log(e);
-    yield put(fetchNextLoansPageFailed(e));
+    yield put(actions.fetchNextLoansPageFailed(e));
   }
 }
 

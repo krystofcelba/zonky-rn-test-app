@@ -10,7 +10,7 @@ import { View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import _ from 'lodash';
 
 import type { Loan } from '../redux/sagas/api';
-import { fetchNextLoansPage } from '../redux/actions/loans';
+import { actions } from '../redux/reducers/loans';
 import LoanCard from '../components/main-screen/LoanCard';
 import NavBar from '../components/common/NavBar';
 
@@ -79,6 +79,6 @@ const mapStateToProps = ({ loans: { loans, loading } }) => ({
   loans: Object.keys(loans).map(loanId => loans[loanId]),
   loading,
 });
-const mapDispatchToProps = { fetchNextLoansPage };
+const mapDispatchToProps = { fetchNextLoansPage: actions.fetchNextLoansPage };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);
