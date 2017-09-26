@@ -1,17 +1,17 @@
 import { delay } from 'redux-saga';
-import { put, select, call, fork, take, race } from 'redux-saga/effects';
+import { call, fork, put, race, select, take } from 'redux-saga/effects';
+
 import {
   LOGIN,
-  LOGOUT,
-  storeAuthToken,
-  logout,
-  loginSuccess as loginSuccessAction,
   loginFailure,
+  loginSuccess as loginSuccessAction,
+  LOGOUT,
+  logout,
   resetNavigatorToRoute,
-  updateUsername,
+  storeAuthToken,
   updatePassword,
+  updateUsername,
 } from '../actions/auth';
-
 import * as API from './api';
 
 function* loginSuccess(token) {

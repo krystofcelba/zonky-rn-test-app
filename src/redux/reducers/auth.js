@@ -1,10 +1,10 @@
-import { UPDATE_USERNAME, UPDATE_PASSWORD, STORE_AUTH_TOKEN } from '../actions/auth';
-import { DEV_ZONKY_USERNAME, DEV_ZONKY_PASSWORD } from '../../constants/config';
+import { DEV_ZONKY_PASSWORD, DEV_ZONKY_USERNAME } from '../../constants/config';
+import { STORE_AUTH_TOKEN, UPDATE_PASSWORD, UPDATE_USERNAME } from '../actions/auth';
 
 const authReducer = (
   state = {
     token: null,
-    credentials: { username: DEV_ZONKY_USERNAME, password: DEV_ZONKY_PASSWORD },
+    credentials: { username: DEV_ZONKY_USERNAME || '', password: DEV_ZONKY_PASSWORD || '' },
   },
   action,
 ) => {
@@ -25,3 +25,5 @@ const authReducer = (
 };
 
 export default authReducer;
+
+export const getAuthToken = state => state.auth.token;

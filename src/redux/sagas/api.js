@@ -1,7 +1,7 @@
-import { put, select, call } from 'redux-saga/effects';
 import axios from 'axios';
+import { call, select } from 'redux-saga/effects';
 
-import { logout } from '../actions/auth';
+import { getAuthToken } from '../reducers/auth';
 
 // const BASE_URL = 'https://private-anon-b35ae4e59e-zonky.apiary-mock.com';
 const BASE_URL = 'https://api.zonky.cz';
@@ -32,36 +32,33 @@ export type AuthToken = {
   scope: string,
 };
 
+export const fullUriForPath = path => `${BASE_URL}${path}`;
+
 export function* get(path, config = {}) {
-  const resp = yield call(axios.get, `${BASE_URL}${path}`, config);
+  const resp = yield call(axios.get, fullUriForPath(path), config);
+
   return resp.data;
 }
 
-export function* post(path, body, config = {}) {
-  const resp = yield call(axios.post, `${BASE_URL}${path}`, body, config);
+export function* post(path, data, config = {}) {
+  const resp = yield call(axios.post, fullUriForPath(path), data, config);
   return resp.data;
 }
 
-function* authorizedGet(path, config = {}) {
-  const token = yield select(state => state.auth.token);
-  let headers = config.headers || {};
-  if (token !== null) {
-    headers = { ...headers, Authorization: `Bearer ${token.access_token}` };
-  } else {
-    put(logout);
-  }
-  const resp = yield call(get, path, { ...config, headers });
-  return resp;
+export function* authorizedGet(path, config = {}) {
+  const token = yield select(getAuthToken);
+  const accessToken = token && token.access_token;
+  const headers = { ...(config.headers || {}), Authorization: `Bearer ${accessToken}` };
+  return yield call(get, path, { ...config, headers });
 }
 
 export function* requestAuthToken(body: string) {
-  const resp = yield call(post, '/oauth/token', body, {
+  return yield call(post, '/oauth/token', body, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: 'Basic d2ViOndlYg==',
     },
   });
-  return resp;
 }
 
 export function* authorizeUser(username: string, password: string) {
@@ -75,13 +72,10 @@ export function* refreshToken(storedToken: AuthToken) {
 }
 
 export function* fetchLoans(page: number) {
-  const resp = yield call(
+  return yield call(
     // We actually don't have to call this endpoint with authorization I do it only for example.
     authorizedGet,
     '/loans/marketplace?fields=id,name,story,photos,interestRate,rating,termInMonths,amount,investmentsCount,deadline,remainingInvestment',
     { headers: { 'X-Page': page, 'X-Size': PAGE_SIZE } },
   );
-  return resp;
 }
-
-export const fullUriForPath = path => `${BASE_URL}${path}`;
