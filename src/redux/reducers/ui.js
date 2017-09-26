@@ -11,7 +11,7 @@ export const HIDE_ERROR_ALERT = 'HIDE_ERROR_ALERT';
 
 export type UIAction =
   | { type: typeof SET_ERROR_ALERT_VISIBLE, visible: boolean, title: string, message: string }
-  | { type: typeof SHOW_ERROR_ALERT, title: string, message: string }
+  | { type: typeof SHOW_ERROR_ALERT, title: string, message: string, duration?: number }
   | { type: typeof HIDE_ERROR_ALERT }
   | { type: typeof UPDATE_LOGIN_SCREEN_USERNAME_INPUT_TEXT, text: string }
   | { type: typeof UPDATE_LOGIN_SCREEN_PASSWORD_INPUT_TEXT, text: string };
@@ -56,7 +56,12 @@ export const uiActions = {
     title,
     message,
   }),
-  showErrorAlert: (title: string, message: string) => ({ type: SHOW_ERROR_ALERT, title, message }),
+  showErrorAlert: (title: string, message: string, duration?: number = 2000) => ({
+    type: SHOW_ERROR_ALERT,
+    title,
+    message,
+    duration,
+  }),
   hideErrorAlert: () => ({ type: HIDE_ERROR_ALERT }),
   updateLoginScreenUsernameInput: (text: string) => ({
     type: UPDATE_LOGIN_SCREEN_USERNAME_INPUT_TEXT,

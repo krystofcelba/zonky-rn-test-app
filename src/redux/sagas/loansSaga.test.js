@@ -61,5 +61,6 @@ it('fails fetching next loans page', () =>
       type: SHOW_ERROR_ALERT,
       title: Strings.FETCHING_LOANS_ERROR_ALERT_TITLE,
       message: Strings.errorMessageFormatter('Invalid access token: null'),
+      duration: 2000,
     })
     .run());

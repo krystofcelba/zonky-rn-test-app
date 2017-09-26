@@ -54,6 +54,7 @@ it('fails to authorize with username and password', () => {
       type: SHOW_ERROR_ALERT,
       title: Strings.LOGIN_ERROR_ALERT_TITLE,
       message: Strings.errorMessageFormatter(errorMessage),
+      duration: 2000,
     })
     .put({ type: LOGIN_FAILURE })
     .returns(null)
@@ -84,6 +85,7 @@ it('fails to refresh auth token', () => {
       type: SHOW_ERROR_ALERT,
       title: Strings.TOKEN_REFRESHING_ERROR_ALERT_TITLE,
       message: Strings.errorMessageFormatter(errorResp.errorMessage),
+      duration: 2000,
     })
     .returns(null)
     .run();

@@ -1,19 +1,19 @@
 import { delay } from 'redux-saga';
 import { call, put, actionChannel, take, fork, race } from 'redux-saga/effects';
 
-import { SHOW_ERROR_ALERT, HIDE_ERROR_ALERT, uiActions } from '../reducers/ui';
+import { uiActions, SHOW_ERROR_ALERT, HIDE_ERROR_ALERT } from '../reducers/ui';
 
-function* errorAlertFlow() {
+export function* errorAlertFlow() {
   const requestChan = yield actionChannel(SHOW_ERROR_ALERT);
   while (true) {
-    const { title, message } = yield take(requestChan);
+    const { title, message, duration } = yield take(requestChan);
     yield put(uiActions.setErrorAlertVisible(true, title, message));
     yield race({
       hideErrorAlertAction: take(HIDE_ERROR_ALERT),
-      delayCall: call(delay, 1000),
+      delayCall: call(delay, duration),
     });
 
-    yield put(uiActions.setErrorAlertVisible(false, ''));
+    yield put(uiActions.setErrorAlertVisible(false));
   }
 }
 
