@@ -1,7 +1,7 @@
 import { delay } from 'redux-saga';
 import { call, fork, put, race, select, take, takeLatest } from 'redux-saga/effects';
 
-import { actions, LOGIN, LOGOUT, LOGIN_SUCCESS } from '../reducers/auth';
+import { actions, LOGIN, LOGOUT, LOGIN_SUCCESS, getAuthToken } from '../reducers/auth';
 import * as API from './api';
 
 import * as Strings from '../../constants/strings';
@@ -12,16 +12,16 @@ import {
   getLoginScreenPasswordInputText,
 } from '../reducers/ui';
 
-function* loginSuccess() {
+export function* loginSuccess() {
   yield put(uiActions.resetNavigatorToRoute('Main'));
   yield put(uiActions.updateLoginScreenUsernameInput(''));
   yield put(uiActions.updateLoginScreenPasswordInput(''));
 }
 
-function* authorize(isUserLogged) {
+export function* authorize(isUserLogged) {
   let resp = null;
   if (isUserLogged) {
-    const oldToken = yield select(state => state.auth.token);
+    const oldToken = yield select(getAuthToken);
     resp = yield call(API.refreshToken, oldToken);
   } else {
     const username = yield select(getLoginScreenUsernameInputText);
@@ -44,7 +44,7 @@ function* authorize(isUserLogged) {
   return null;
 }
 
-function* tokenRefreshingLoop(storedToken) {
+export function* tokenRefreshingLoop(storedToken) {
   let token = storedToken;
   while (true) {
     const isUserLogged = token != null;
@@ -56,8 +56,8 @@ function* tokenRefreshingLoop(storedToken) {
   }
 }
 
-function* authenticationFlow() {
-  const storedToken = yield select(state => state.auth.token);
+export function* authenticationFlow() {
+  const storedToken = yield select(getAuthToken);
 
   while (true) {
     if (!storedToken) yield take(LOGIN);

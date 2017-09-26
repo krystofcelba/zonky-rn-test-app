@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ loans: { loans, loading } }) => ({
-  loans: Object.keys(loans).map(loanId => loans[loanId]),
+const mapStateToProps = ({ loans: { loansById, loans, loading } }) => ({
+  loans: loansById.map(loanId => loans[loanId]),
   loading,
 });
 const mapDispatchToProps = { fetchNextLoansPage: actions.fetchNextLoansPage };
