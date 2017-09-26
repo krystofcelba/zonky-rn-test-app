@@ -5,10 +5,10 @@ import * as matchers from 'redux-saga-test-plan/matchers';
 import { authorize, authenticationFlow, loginSuccess } from './authSaga';
 import {
   getAuthToken,
-  STORE_AUTH_TOKEN,
   LOGIN,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
+  STORE_AUTH_TOKEN,
 } from '../reducers/auth';
 import * as API from './api';
 import * as Strings from '../../constants/strings';

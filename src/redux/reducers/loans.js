@@ -7,7 +7,7 @@ export const FETCH_NEXT_LOANS_PAGE_FAILED = 'FETCH_NEXT_LOANS_PAGE_FAILED';
 export type LoanAction =
   | { type: typeof FETCH_NEXT_LOANS_PAGE }
   | { type: typeof FETCH_NEXT_LOANS_PAGE_SUCCESS, loans: [], page: number }
-  | { type: typeof FETCH_NEXT_LOANS_PAGE_FAILED, error: {} };
+  | { type: typeof FETCH_NEXT_LOANS_PAGE_FAILED };
 
 const loansReducer = (
   state = { loansById: [], loans: {}, page: -1, loading: false },
@@ -35,6 +35,12 @@ const loansReducer = (
         loading: false,
       };
     }
+    case FETCH_NEXT_LOANS_PAGE_FAILED: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
     default: {
       return state;
     }
@@ -52,8 +58,9 @@ export const actions = {
     loans,
     page,
   }),
-  fetchNextLoansPageFailed: (error: {}): LoanAction => ({
+  fetchNextLoansPageFailed: (): LoanAction => ({
     type: FETCH_NEXT_LOANS_PAGE_FAILED,
-    error,
   }),
 };
+
+export const getNextLoansPageNum = state => state.loans.page + 1;

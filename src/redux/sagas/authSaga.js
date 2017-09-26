@@ -3,7 +3,6 @@ import { call, fork, put, race, select, take, takeLatest } from 'redux-saga/effe
 
 import { actions, LOGIN, LOGOUT, LOGIN_SUCCESS, getAuthToken } from '../reducers/auth';
 import * as API from './api';
-
 import * as Strings from '../../constants/strings';
 
 import {
