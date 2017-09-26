@@ -4,19 +4,19 @@ import * as matchers from 'redux-saga-test-plan/matchers';
 
 import { authorize, authenticationFlow, loginSuccess } from './authSaga';
 import {
+  getAuthToken,
   STORE_AUTH_TOKEN,
   LOGIN,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  getAuthToken,
 } from '../reducers/auth';
 import * as API from './api';
 import * as Strings from '../../constants/strings';
 import {
   uiActions,
-  SHOW_ERROR_ALERT,
   getLoginScreenUsernameInputText,
   getLoginScreenPasswordInputText,
+  SHOW_ERROR_ALERT,
 } from '../reducers/ui';
 
 import reducers from '../reducers';
