@@ -18,8 +18,8 @@ it('should call axois.get with absolute url, then return data from response', ()
   testSaga(API.get, '')
     .next()
     .call(axios.get, API.fullUriForPath(''), {})
-    .next({ data: responseData })
-    .returns(responseData);
+    .next(API.handleSuccessResponse({ data: responseData }))
+    .returns({ ok: true, data: responseData });
 });
 
 it('should call axois.post with absolute url and post body, then return data from response', () => {
@@ -27,8 +27,8 @@ it('should call axois.post with absolute url and post body, then return data fro
   testSaga(API.post, '', '')
     .next()
     .call(axios.post, API.fullUriForPath(''), '', {})
-    .next({ data: responseData })
-    .returns(responseData);
+    .next(API.handleSuccessResponse({ data: responseData }))
+    .returns({ ok: true, data: responseData });
 });
 
 it('should select auth token from state, then add it to get call headers', () => {

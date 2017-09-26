@@ -1,11 +1,13 @@
 import { delay } from 'redux-saga';
 import { call, fork, put, race, select, take, takeLatest } from 'redux-saga/effects';
 
-import { actions, LOGIN, LOGOUT, LOGIN_SUCCESS, LOGIN_FAILURE } from '../reducers/auth';
+import { actions, LOGIN, LOGOUT, LOGIN_SUCCESS } from '../reducers/auth';
 import * as API from './api';
 
+import * as Strings from '../../constants/strings';
+
 import {
-  actions as uiActions,
+  uiActions,
   getLoginScreenUsernameInputText,
   getLoginScreenPasswordInputText,
 } from '../reducers/ui';
@@ -17,26 +19,29 @@ function* loginSuccess() {
 }
 
 function* authorize(isUserLogged) {
-  try {
-    let token = null;
-    if (!isUserLogged) {
-      const username = yield select(getLoginScreenUsernameInputText);
-      const password = yield select(getLoginScreenPasswordInputText);
-      token = yield call(API.authorizeUser, username, password);
-    } else {
-      const oldToken = yield select(state => state.auth.token);
-      token = yield call(API.refreshToken, oldToken);
-    }
+  let resp = null;
+  if (isUserLogged) {
+    const oldToken = yield select(state => state.auth.token);
+    resp = yield call(API.refreshToken, oldToken);
+  } else {
+    const username = yield select(getLoginScreenUsernameInputText);
+    const password = yield select(getLoginScreenPasswordInputText);
+    resp = yield call(API.authorizeUser, username, password);
+  }
+  if (resp.ok) {
+    const token = resp.data;
     yield put(actions.storeAuthToken(token));
     if (!isUserLogged) yield put(actions.loginSuccess());
     return token;
-  } catch (e) {
-    console.log(e);
-    yield put(uiActions.showErrorAlert(e.response.data.error_description));
-    yield put(actions.loginFailure(e));
-    yield put(actions.logout());
-    return null;
   }
+  yield put(
+    uiActions.showErrorAlert(
+      isUserLogged ? Strings.TOKEN_REFRESHING_ERROR_ALERT_TITLE : Strings.LOGIN_ERROR_ALERT_TITLE,
+      Strings.errorMessageFormatter(resp.errorMessage),
+    ),
+  );
+  yield put(isUserLogged ? actions.logout() : actions.loginFailure());
+  return null;
 }
 
 function* tokenRefreshingLoop(storedToken) {
@@ -64,6 +69,7 @@ function* authenticationFlow() {
 
     if (logoutAction) {
       yield put(actions.storeAuthToken(null));
+      yield put(uiActions.resetNavigatorToRoute('Login'));
     }
   }
 }

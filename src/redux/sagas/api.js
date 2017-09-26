@@ -34,14 +34,30 @@ export type AuthToken = {
 
 export const fullUriForPath = path => `${BASE_URL}${path}`;
 
+export const handleErrorResponse = (e) => {
+  const response = e.response || { data: {} };
+  const errorMessage = response.data.error_description || e.request.responseText;
+  return { ok: false, data: response.data, errorMessage };
+};
+
+export const handleSuccessResponse = resp => ({ ok: true, data: resp.data });
+
 export function* get(path, config = {}) {
-  const resp = yield call(axios.get, fullUriForPath(path), config);
-  return resp.data;
+  try {
+    const resp = yield call(axios.get, fullUriForPath(path), config);
+    return handleSuccessResponse(resp);
+  } catch (e) {
+    return handleErrorResponse(e);
+  }
 }
 
 export function* post(path, data, config = {}) {
-  const resp = yield call(axios.post, fullUriForPath(path), data, config);
-  return resp.data;
+  try {
+    const resp = yield call(axios.post, fullUriForPath(path), data, config);
+    return handleSuccessResponse(resp);
+  } catch (e) {
+    return handleErrorResponse(e);
+  }
 }
 
 export function* authorizedGet(path, config = {}) {

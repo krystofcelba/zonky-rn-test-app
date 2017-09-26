@@ -10,8 +10,8 @@ export const SHOW_ERROR_ALERT = 'SHOW_ERROR_ALERT';
 export const HIDE_ERROR_ALERT = 'HIDE_ERROR_ALERT';
 
 export type UIAction =
-  | { type: typeof SET_ERROR_ALERT_VISIBLE, visible: boolean, message: string }
-  | { type: typeof SHOW_ERROR_ALERT, message: string }
+  | { type: typeof SET_ERROR_ALERT_VISIBLE, visible: boolean, title: string, message: string }
+  | { type: typeof SHOW_ERROR_ALERT, title: string, message: string }
   | { type: typeof HIDE_ERROR_ALERT }
   | { type: typeof UPDATE_LOGIN_SCREEN_USERNAME_INPUT_TEXT, text: string }
   | { type: typeof UPDATE_LOGIN_SCREEN_PASSWORD_INPUT_TEXT, text: string };
@@ -19,7 +19,7 @@ export type UIAction =
 const uiReducer = (
   state = {
     loginScreen: { usernameInputText: DEV_ZONKY_USERNAME, passwordInputText: DEV_ZONKY_PASSWORD },
-    global: { errorAlertVisible: false, errorAlertMessage: '' },
+    global: { errorAlertVisible: false, errorAlertTitle: '', errorAlertMessage: '' },
   },
   action: UIAction,
 ) => {
@@ -36,6 +36,7 @@ const uiReducer = (
         global: {
           ...state.global,
           errorAlertVisible: action.visible,
+          errorAlertTitle: action.title || '',
           errorAlertMessage: action.message || '',
         },
       };
@@ -48,16 +49,23 @@ const uiReducer = (
 
 export default uiReducer;
 
-export const actions = {
-  setErrorAlertVisible: (visible: boolean, message: string) => ({
+export const uiActions = {
+  setErrorAlertVisible: (visible: boolean, title: string, message: string) => ({
     type: SET_ERROR_ALERT_VISIBLE,
     visible,
+    title,
     message,
   }),
-  showErrorAlert: message => ({ type: SHOW_ERROR_ALERT, message }),
+  showErrorAlert: (title: string, message: string) => ({ type: SHOW_ERROR_ALERT, title, message }),
   hideErrorAlert: () => ({ type: HIDE_ERROR_ALERT }),
-  updateLoginScreenUsernameInput: text => ({ type: UPDATE_LOGIN_SCREEN_USERNAME_INPUT_TEXT, text }),
-  updateLoginScreenPasswordInput: text => ({ type: UPDATE_LOGIN_SCREEN_PASSWORD_INPUT_TEXT, text }),
+  updateLoginScreenUsernameInput: (text: string) => ({
+    type: UPDATE_LOGIN_SCREEN_USERNAME_INPUT_TEXT,
+    text,
+  }),
+  updateLoginScreenPasswordInput: (text: string) => ({
+    type: UPDATE_LOGIN_SCREEN_PASSWORD_INPUT_TEXT,
+    text,
+  }),
   resetNavigatorToRoute: (routeName: string): NavigationResetAction =>
     NavigationActions.reset({
       index: 0,

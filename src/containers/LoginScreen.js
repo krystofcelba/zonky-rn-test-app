@@ -10,7 +10,7 @@ import type {
 import { FormLabel, FormInput, Card, Button } from 'react-native-elements';
 
 import { actions } from '../redux/reducers/auth';
-import { actions as uiActions } from '../redux/reducers/ui';
+import { uiActions } from '../redux/reducers/ui';
 import * as Strings from '../constants/strings';
 import * as Colors from '../constants/colors';
 import NavBar from '../components/common/NavBar';

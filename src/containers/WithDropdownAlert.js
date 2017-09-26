@@ -3,12 +3,13 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import DropdownAlert from 'react-native-dropdownalert';
 
-import { actions } from '../redux/reducers/ui';
+import { uiActions } from '../redux/reducers/ui';
 
 type Props = {
   children: {},
   errorAlertVisible: boolean,
-  errorAlertMessage: '',
+  errorAlertTitle: string,
+  errorAlertMessage: string,
   hideErrorAlert: () => {},
 };
 
@@ -16,7 +17,11 @@ class WithDropdownAlert extends React.PureComponent<void, Props, void> {
   componentWillReceiveProps(nextProps) {
     if (nextProps.errorAlertVisible !== this.props.errorAlertVisible) {
       if (nextProps.errorAlertVisible) {
-        this._dropdown.alertWithType('error', 'Error', nextProps.errorAlertMessage);
+        this._dropdown.alertWithType(
+          'error',
+          nextProps.errorAlertTitle,
+          nextProps.errorAlertMessage,
+        );
       } else {
         this._dropdown.dismiss();
       }
@@ -43,11 +48,14 @@ class WithDropdownAlert extends React.PureComponent<void, Props, void> {
   }
 }
 
-const mapStateToProps = ({ ui: { global: { errorAlertVisible, errorAlertMessage } } }) => ({
+const mapStateToProps = ({
+  ui: { global: { errorAlertVisible, errorAlertTitle, errorAlertMessage } },
+}) => ({
   errorAlertVisible,
+  errorAlertTitle,
   errorAlertMessage,
 });
 
-const mapActionsToProps = { hideErrorAlert: actions.hideErrorAlert };
+const mapActionsToProps = { hideErrorAlert: uiActions.hideErrorAlert };
 
 export default connect(mapStateToProps, mapActionsToProps)(WithDropdownAlert);
