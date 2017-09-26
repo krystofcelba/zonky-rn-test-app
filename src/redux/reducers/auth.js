@@ -12,7 +12,6 @@ export type AuthAction =
     }
   | {
       type: typeof LOGIN_FAILURE,
-      error: {},
     }
   | { type: typeof LOGIN }
   | { type: typeof LOGOUT }
@@ -43,9 +42,8 @@ export const actions = {
   loginSuccess: (): AuthAction => ({
     type: LOGIN_SUCCESS,
   }),
-  loginFailure: (error: {}): AuthAction => ({
+  loginFailure: (): AuthAction => ({
     type: LOGIN_FAILURE,
-    error,
   }),
   logout: (): AuthAction => ({
     type: LOGOUT,

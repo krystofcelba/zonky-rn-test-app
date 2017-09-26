@@ -34,13 +34,14 @@ export function* authorize(isUserLogged) {
     if (!isUserLogged) yield put(actions.loginSuccess());
     return token;
   }
+  yield put(actions.storeAuthToken(null));
   yield put(
     uiActions.showErrorAlert(
       isUserLogged ? Strings.TOKEN_REFRESHING_ERROR_ALERT_TITLE : Strings.LOGIN_ERROR_ALERT_TITLE,
       Strings.errorMessageFormatter(resp.errorMessage),
     ),
   );
-  yield put(isUserLogged ? actions.logout() : actions.loginFailure());
+  if (!isUserLogged) yield put(actions.loginFailure());
   return null;
 }
 
@@ -49,10 +50,11 @@ export function* tokenRefreshingLoop(storedToken) {
   while (true) {
     const isUserLogged = token != null;
     token = yield call(authorize, isUserLogged);
+    console.log(token);
     if (token == null) return;
 
-    const expiresInMS = token.expires_in * 1000;
-    yield call(delay, expiresInMS);
+    const expiresInMs = token.expires_in * 1000;
+    yield call(delay, expiresInMs);
   }
 }
 
@@ -62,15 +64,12 @@ export function* authenticationFlow() {
   while (true) {
     if (!storedToken) yield take(LOGIN);
 
-    const { logoutAction } = yield race({
+    yield race({
       logoutAction: take(LOGOUT),
       authLoop: call(tokenRefreshingLoop, storedToken),
     });
 
-    if (logoutAction) {
-      yield put(actions.storeAuthToken(null));
-      yield put(uiActions.resetNavigatorToRoute('Login'));
-    }
+    yield put(uiActions.resetNavigatorToRoute('Login'));
   }
 }
 
