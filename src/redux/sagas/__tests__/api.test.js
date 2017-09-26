@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { testSaga } from 'redux-saga-test-plan';
 
-import * as API from './api';
+import * as API from '../api';
 
-import { getAuthToken } from '../reducers/auth';
+import { getAuthToken } from '../../reducers/auth';
 
 const storedToken = {
   access_token: 'c5f6b996-47aa-4c59-8fc7-8a03fcf5da9d',
@@ -31,7 +31,7 @@ it('should call axois.post with absolute url and post body, then return data fro
     .returns({ ok: true, data: responseData });
 });
 
-it('should select auth token from state, then add it to get call headers', () => {
+it('should add auth token', () => {
   testSaga(API.authorizedGet, '')
     .next()
     .select(getAuthToken)

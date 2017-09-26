@@ -1,7 +1,7 @@
 import { expectSaga } from 'redux-saga-test-plan';
 
-import { errorAlertFlow } from './uiSaga';
-import { SHOW_ERROR_ALERT, HIDE_ERROR_ALERT, SET_ERROR_ALERT_VISIBLE } from '../reducers/ui';
+import { errorAlertFlow } from '../uiSaga';
+import { SHOW_ERROR_ALERT, HIDE_ERROR_ALERT, SET_ERROR_ALERT_VISIBLE } from '../../reducers/ui';
 
 it('shows error alert', () => {
   const title = '';

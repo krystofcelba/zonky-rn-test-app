@@ -1,17 +1,17 @@
 import * as matchers from 'redux-saga-test-plan/matchers';
 import { expectSaga } from 'redux-saga-test-plan';
 
-import { loansFetchingFlow } from './loansSaga';
+import { loansFetchingFlow } from '../loansSaga';
 import {
   FETCH_NEXT_LOANS_PAGE,
   FETCH_NEXT_LOANS_PAGE_SUCCESS,
   FETCH_NEXT_LOANS_PAGE_FAILED,
-} from '../reducers/loans';
-import { SHOW_ERROR_ALERT } from '../reducers/ui';
-import reducers from '../reducers';
+} from '../../reducers/loans';
+import { SHOW_ERROR_ALERT } from '../../reducers/ui';
+import reducers from '../../reducers';
 
-import * as API from './api';
-import * as Strings from '../../constants/strings';
+import * as API from '../api';
+import * as Strings from '../../../constants/strings';
 
 const loans = [
   {
