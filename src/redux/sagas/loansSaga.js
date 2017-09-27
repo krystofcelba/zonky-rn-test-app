@@ -21,7 +21,6 @@ export function* loansFetchingFlow() {
         uiActions.showErrorAlert(
           Strings.FETCHING_LOANS_ERROR_ALERT_TITLE,
           Strings.errorMessageFormatter(resp.errorMessage),
-          
         ),
       );
     }
