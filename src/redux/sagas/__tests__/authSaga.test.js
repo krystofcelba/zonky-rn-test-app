@@ -25,7 +25,7 @@ const storedToken = {
   access_token: 'c5f6b996-47aa-4c59-8fc7-8a03fcf5da9d',
   token_type: 'bearer',
   refresh_token: 'd33c18a7-cc94-4e35-9ac3-c67528a602f4',
-  expires_in: 0.1,
+  expires_in: 1,
   scope: 'SCOPE_APP_WEB',
 };
 
@@ -41,7 +41,7 @@ it('success authorize with username and password', () =>
     .returns(storedToken)
     .run());
 
-it('fails to authorize with username and password', () => {
+it('failed username and password authorization', () => {
   const errorMessage = 'Bad credentials';
   return expectSaga(authorize, false)
     .provide([
@@ -71,7 +71,7 @@ it('refresh auth token', () =>
     .returns(storedToken)
     .run());
 
-it('fails to refresh auth token', () => {
+it('failed auth token refresh', () => {
   const refreshToken = 'bad';
   const badStoredToken = { token: { refresh_token: refreshToken, scope: 'SCOPE_APP_WEB' } };
   const errorResp = { ok: false, data: {}, errorMessage: `Invalid access token: ${refreshToken}` };
@@ -91,12 +91,12 @@ it('fails to refresh auth token', () => {
     .run();
 });
 
-it('runs authentication flow', () =>
+it('run authentication flow', () =>
   expectSaga(authenticationFlow)
     .withReducer(reducers)
     .provide([[matchers.call.fn(API.authorizeUser), { ok: true, data: storedToken }]])
     .dispatch({ type: LOGIN })
-    .delay(1)
+    .delay(0.1)
     .dispatch({ type: STORE_AUTH_TOKEN, token: null })
     .run(1000));
 

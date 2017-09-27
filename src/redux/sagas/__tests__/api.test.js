@@ -44,7 +44,7 @@ it('should add auth token', () => {
 });
 
 
-it('posts provided body to /oauth/token/ endpoint', () => {
+it('should post provided body to /oauth/token/ endpoint', () => {
   const body = '';
   testSaga(API.requestAuthToken, body)
     .next()
@@ -58,7 +58,7 @@ it('posts provided body to /oauth/token/ endpoint', () => {
     .isDone();
 });
 
-it('calls requestAuthToken with username and password in form urlencoded POST body', () => {
+it('should call requestAuthToken with username and password in form urlencoded POST body', () => {
   const username = 'test';
   const password = 'test';
   testSaga(API.authorizeUser, username, password)
@@ -71,7 +71,7 @@ it('calls requestAuthToken with username and password in form urlencoded POST bo
     .isDone();
 });
 
-it('calls requestAuthToken with stored refresh_token and scope in form urlencoded POST body', () => {
+it('should call requestAuthToken with stored refresh_token and scope in form urlencoded POST body', () => {
   testSaga(API.refreshToken, storedToken)
     .next()
     .call(
@@ -82,7 +82,7 @@ it('calls requestAuthToken with stored refresh_token and scope in form urlencode
     .isDone();
 });
 
-it('gets marketplace endpoint with fields url parameter and pagination headers', () => {
+it('should get marketplace endpoint with fields url parameter and pagination headers', () => {
   const page = 0;
   testSaga(API.fetchLoans, page)
     .next()
