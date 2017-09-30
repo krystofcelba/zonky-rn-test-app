@@ -41,7 +41,7 @@ it('success authorize with username and password', () =>
     .returns(storedToken)
     .run());
 
-it('failed username and password authorization', () => {
+it('show error alert when username and password authorization fail', () => {
   const errorMessage = 'Bad credentials';
   return expectSaga(authorize, false)
     .provide([
@@ -71,7 +71,7 @@ it('refresh auth token', () =>
     .returns(storedToken)
     .run());
 
-it('failed auth token refresh', () => {
+it('show error alert when auth token refresh fail', () => {
   const refreshToken = 'bad';
   const badStoredToken = { token: { refresh_token: refreshToken, scope: 'SCOPE_APP_WEB' } };
   const errorResp = { ok: false, data: {}, errorMessage: `Invalid access token: ${refreshToken}` };
