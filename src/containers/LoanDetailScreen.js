@@ -13,13 +13,15 @@ import type {
 } from 'react-navigation/src/TypeDefinition';
 
 import type { Loan } from '../redux/sagas/api';
-import * as Strings from '../constants/strings';
-import * as Colors from '../constants/colors';
+import { fullUriForPath } from '../redux/sagas/api';
 import { percentage } from '../lib/utils';
 
 import NavBar from '../components/common/NavBar';
 import PropertyBox from '../components/common/PropertyBox';
 import LoanProgressView from '../components/common/LoanProgressView';
+
+import * as Strings from '../constants/strings';
+import * as Colors from '../constants/colors';
 
 const window = Dimensions.get('window');
 const PARALLAX_IMAGE_HEIGHT = 200;
@@ -45,7 +47,7 @@ class LoanDetailScreen extends React.PureComponent<void, Props, void> {
             <View style={{ backgroundColor: 'transparent' }}>
               <Image
                 source={{
-                  uri: loan.photoUri,
+                  uri: fullUriForPath(loan.photos[0].url),
                   width: window.width,
                   height: PARALLAX_IMAGE_HEIGHT,
                 }}
