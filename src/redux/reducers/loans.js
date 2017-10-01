@@ -30,7 +30,7 @@ const loansReducer = (
           ...action.loans.reduce(
             (map, next) => ({
               ...map,
-              [next.id]: { ...next, photoUri: fullUriForPath(next.photos[0].url) },
+              [next.id]: next,
             }),
             {},
           ),
