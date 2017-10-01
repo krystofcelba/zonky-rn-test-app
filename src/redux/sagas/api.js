@@ -14,7 +14,6 @@ export type Loan = {
   name: string,
   story?: string,
   photos: Photo[],
-  photoUri?: string,
   termInMonths: number,
   interestRate: number,
   rating: string,
