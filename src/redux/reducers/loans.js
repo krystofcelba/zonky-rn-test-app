@@ -1,5 +1,4 @@
 /* @flow */
-import { fullUriForPath } from '../sagas/api';
 import { uniq } from '../../lib/utils';
 
 export const FETCH_NEXT_LOANS_PAGE = 'FETCH_NEXT_LOANS_PAGE';
@@ -27,13 +26,7 @@ const loansReducer = (
         loansById: uniq([...state.loansById, ...action.loans.map(next => next.id)]),
         loans: {
           ...state.loans,
-          ...action.loans.reduce(
-            (map, next) => ({
-              ...map,
-              [next.id]: next,
-            }),
-            {},
-          ),
+          ...action.loans.reduce((map, next) => ({ ...map, [next.id]: next }), {}),
         },
         page: action.page,
         loading: false,
