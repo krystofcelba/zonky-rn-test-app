@@ -1,3 +1,4 @@
+/* @flow */
 import { fullUriForPath } from '../sagas/api';
 import { uniq } from '../../lib/utils';
 
@@ -10,10 +11,12 @@ export type LoanAction =
   | { type: typeof FETCH_NEXT_LOANS_PAGE_SUCCESS, loans: [], page: number }
   | { type: typeof FETCH_NEXT_LOANS_PAGE_FAILED };
 
+export type LoansState = { loansById: number[], loans: {}, page: number, loading: boolean };
+
 const loansReducer = (
-  state = { loansById: [], loans: {}, page: -1, loading: false },
+  state: LoansState = { loansById: [], loans: {}, page: -1, loading: false },
   action: LoanAction,
-) => {
+): LoansState => {
   switch (action.type) {
     case FETCH_NEXT_LOANS_PAGE: {
       return { ...state, loading: true };
@@ -43,6 +46,7 @@ const loansReducer = (
       };
     }
     default: {
+      (action: empty);
       return state;
     }
   }
@@ -64,4 +68,4 @@ export const actions = {
   }),
 };
 
-export const getNextLoansPageNum = state => state.loans.page + 1;
+export const getNextLoansPageNum = (state: { loans: LoansState }) => state.loans.page + 1;
