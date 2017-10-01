@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Card, Button } from 'react-native-elements';
 
 import type { Loan } from '../../redux/sagas/api';
+import { fullUriForPath } from '../../redux/sagas/api';
 import * as Colors from '../../constants/colors';
 
 import LoanProgressView from '../common/LoanProgressView';
@@ -22,7 +23,7 @@ class LoanCard extends React.PureComponent<void, Props, void> {
     const { loan } = this.props;
     return (
       <TouchableOpacity onPress={this._onDetailButtonPress}>
-        <Card image={{ uri: loan.photoUri }}>
+        <Card image={{ uri: fullUriForPath(loan.photos[0].url) }}>
           <Text style={styles.title}>{loan.name.toUpperCase()}</Text>
           <Text style={styles.subtitle} numberOfLines={4}>
             {loan.story}
