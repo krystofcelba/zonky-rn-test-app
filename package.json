@@ -48,6 +48,7 @@
     "prettier": "^1.6.1",
     "react-test-renderer": "16.0.0-alpha.12",
     "redux-saga-test-plan": "^3.2.0",
+    "redux-testkit": "^1.0.6",
     "remotedev-server": "^0.2.4"
   },
   "jest": {
