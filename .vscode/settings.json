@@ -13,6 +13,14 @@
         {
             "name": "feature/login-page",
             "base": "develop"
+        },
+        {
+            "name": "feature/marketplace-page",
+            "base": "feature/login-page"
+        },
+        {
+            "name": "feature/loan-detail-page",
+            "base": "feature/marketplace-page"
         }
     ]
 }

@@ -55,3 +55,7 @@ fastlane/screenshots
 # vscode
 #
 .vscode/.react
+
+# ignore changes in src/constants/config.js because there are secret credentials used in development only.
+#
+src/constants/config.js
