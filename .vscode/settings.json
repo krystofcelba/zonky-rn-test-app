@@ -5,12 +5,11 @@
     "files.associations": {
         "*.js": "javascriptreact"
     },
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "javascript.format.enable": false,
     "javascript.validate.enable": false,
     "json.format.enable": false,
-    "gitflow4code.features": [
-        {
+    "gitflow4code.features": [{
             "name": "feature/login-page",
             "base": "develop"
         },
@@ -21,6 +20,10 @@
         {
             "name": "feature/loan-detail-page",
             "base": "feature/marketplace-page"
+        },
+        {
+            "name": "feature/tests",
+            "base": "feature/loan-detail-page"
         }
     ]
 }

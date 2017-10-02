@@ -1,20 +1,29 @@
-import { UPDATE_USERNAME, UPDATE_PASSWORD, STORE_AUTH_TOKEN } from '../actions/auth';
-import { DEV_ZONKY_USERNAME, DEV_ZONKY_PASSWORD } from '../../constants/config';
+import type { AuthToken } from '../sagas/api';
+
+export const LOGIN_SUCCESS = 'LOGIN_SUCESS';
+export const LOGIN_FAILURE = 'LOGIN_FAILURE';
+export const STORE_AUTH_TOKEN = 'STORE_AUTH_TOKEN';
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
+
+export type AuthAction =
+  | {
+      type: typeof LOGIN_SUCCESS,
+    }
+  | {
+      type: typeof LOGIN_FAILURE,
+    }
+  | { type: typeof LOGIN }
+  | { type: typeof LOGOUT }
+  | { type: typeof STORE_AUTH_TOKEN, token: AuthToken | null };
 
 const authReducer = (
   state = {
     token: null,
-    credentials: { username: DEV_ZONKY_USERNAME, password: DEV_ZONKY_PASSWORD },
   },
   action,
 ) => {
   switch (action.type) {
-    case UPDATE_USERNAME: {
-      return { ...state, credentials: { ...state.credentials, username: action.username } };
-    }
-    case UPDATE_PASSWORD: {
-      return { ...state, credentials: { ...state.credentials, password: action.password } };
-    }
     case STORE_AUTH_TOKEN: {
       return { ...state, token: action.token };
     }
@@ -25,3 +34,24 @@ const authReducer = (
 };
 
 export default authReducer;
+
+export const actions = {
+  login: (): AuthAction => ({
+    type: LOGIN,
+  }),
+  loginSuccess: (): AuthAction => ({
+    type: LOGIN_SUCCESS,
+  }),
+  loginFailure: (): AuthAction => ({
+    type: LOGIN_FAILURE,
+  }),
+  logout: (): AuthAction => ({
+    type: LOGOUT,
+  }),
+  storeAuthToken: (token: AuthToken | null): AuthAction => ({
+    type: STORE_AUTH_TOKEN,
+    token,
+  }),
+};
+
+export const getAuthToken = state => state.auth.token;

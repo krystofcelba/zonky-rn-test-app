@@ -9,7 +9,8 @@ import type {
 } from 'react-navigation/src/TypeDefinition';
 import { FormLabel, FormInput, Card, Button } from 'react-native-elements';
 
-import { updateUsername, updatePassword, login } from '../redux/actions/auth';
+import { actions } from '../redux/reducers/auth';
+import { uiActions } from '../redux/reducers/ui';
 import * as Strings from '../constants/strings';
 import * as Colors from '../constants/colors';
 import NavBar from '../components/common/NavBar';
@@ -59,6 +60,10 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = () => ({});
-const mapDispatchToProps = { updateUsername, updatePassword, login };
+const mapDispatchToProps = {
+  updateUsername: uiActions.updateLoginScreenUsernameInput,
+  updatePassword: uiActions.updateLoginScreenPasswordInput,
+  login: actions.login,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

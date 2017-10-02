@@ -1,77 +1,78 @@
 import { delay } from 'redux-saga';
-import { put, select, call, fork, take, race } from 'redux-saga/effects';
+import { call, fork, put, race, select, take, takeLatest } from 'redux-saga/effects';
+
+import { actions, getAuthToken, LOGIN, LOGOUT, LOGIN_SUCCESS } from '../reducers/auth';
+import * as API from './api';
+import * as Strings from '../../constants/strings';
+
 import {
-  LOGIN,
-  LOGOUT,
-  storeAuthToken,
-  logout,
-  loginSuccess as loginSuccessAction,
-  loginFailure,
-  resetNavigatorToRoute,
-  updateUsername,
-  updatePassword,
-} from '../actions/auth';
+  uiActions,
+  getLoginScreenUsernameInputText,
+  getLoginScreenPasswordInputText,
+} from '../reducers/ui';
 
-import API from './api';
-
-function* loginSuccess(token) {
-  yield put(storeAuthToken(token));
-  yield put(loginSuccessAction());
-  yield put(resetNavigatorToRoute('Main'));
-  yield put(updateUsername(''));
-  yield put(updatePassword(''));
+export function* loginSuccess() {
+  yield put(uiActions.resetNavigatorToRoute('Main'));
+  yield put(uiActions.updateLoginScreenUsernameInput(''));
+  yield put(uiActions.updateLoginScreenPasswordInput(''));
 }
 
-function* authorize(isUserLogged) {
-  try {
-    let token = null;
-    if (!isUserLogged) {
-      const { username, password } = yield select(state => state.auth.credentials);
-      token = yield call(API.authorizeUser, username, password);
-      yield call(loginSuccess, token);
-    } else {
-      const oldToken = yield select(state => state.auth.token);
-      token = yield call(API.refreshToken, oldToken);
-      yield put(storeAuthToken(token));
-    }
-    return token;
-  } catch (e) {
-    console.log(e);
-    yield put(loginFailure(e));
-    yield put(logout());
-    return null;
+export function* authorize(isUserLogged) {
+  let resp = null;
+  if (isUserLogged) {
+    const oldToken = yield select(getAuthToken);
+    resp = yield call(API.refreshToken, oldToken);
+  } else {
+    const username = yield select(getLoginScreenUsernameInputText);
+    const password = yield select(getLoginScreenPasswordInputText);
+    resp = yield call(API.authorizeUser, username, password);
   }
+  if (resp.ok) {
+    const token = resp.data;
+    yield put(actions.storeAuthToken(token));
+    if (!isUserLogged) yield put(actions.loginSuccess());
+    return token;
+  }
+  yield put(actions.storeAuthToken(null));
+  yield put(
+    uiActions.showErrorAlert(
+      isUserLogged ? Strings.TOKEN_REFRESHING_ERROR_ALERT_TITLE : Strings.LOGIN_ERROR_ALERT_TITLE,
+      Strings.errorMessageFormatter(resp.errorMessage),
+    ),
+  );
+  if (!isUserLogged) yield put(actions.loginFailure());
+  return null;
 }
 
-function* tokenRefreshingLoop(storedToken) {
+export function* tokenRefreshingLoop(storedToken) {
   let token = storedToken;
   while (true) {
     const isUserLogged = token != null;
     token = yield call(authorize, isUserLogged);
+    console.log(token);
     if (token == null) return;
 
-    const expiresInMS = token.expires_in * 1000;
-    yield call(delay, expiresInMS);
+    const expiresInMs = token.expires_in * 1000;
+    yield call(delay, expiresInMs);
   }
 }
 
-function* authenticationFlow() {
-  const storedToken = yield select(state => state.auth.token);
+export function* authenticationFlow() {
+  const storedToken = yield select(getAuthToken);
 
   while (true) {
     if (!storedToken) yield take(LOGIN);
 
-    const { logoutAction } = yield race({
+    yield race({
       logoutAction: take(LOGOUT),
       authLoop: call(tokenRefreshingLoop, storedToken),
     });
 
-    if (logoutAction) {
-      yield put(storeAuthToken(null));
-    }
+    yield put(uiActions.resetNavigatorToRoute('Login'));
   }
 }
 
 export default function* root() {
   yield fork(authenticationFlow);
+  yield takeLatest(LOGIN_SUCCESS, loginSuccess);
 }

@@ -1,7 +1,7 @@
-import { put, select, call } from 'redux-saga/effects';
-import { API } from 'redux-saga-rest';
+import axios from 'axios';
+import { call, select } from 'redux-saga/effects';
 
-import { logout } from '../actions/auth';
+import { getAuthToken } from '../reducers/auth';
 
 // const BASE_URL = 'https://private-anon-b35ae4e59e-zonky.apiary-mock.com';
 const BASE_URL = 'https://api.zonky.cz';
@@ -14,7 +14,6 @@ export type Loan = {
   name: string,
   story?: string,
   photos: Photo[],
-  photoUri?: string,
   termInMonths: number,
   interestRate: number,
   rating: string,
@@ -24,66 +23,73 @@ export type Loan = {
   remainingInvestment: number,
 };
 
-function* authMiddleware(req, next) {
-  const token = yield select(state => state.auth.token);
-  const headers = req.headers || new Headers();
+export type AuthToken = {
+  access_token: string,
+  token_type: string,
+  refresh_token: string,
+  expires_in: number,
+  scope: string,
+};
 
-  if (token !== null) {
-    headers.set('Authorization', `Bearer ${token.access_token}`);
-  }
-  const res = yield next(new Request(req, { headers }));
+export const fullUriForPath = path => `${BASE_URL}${path}`;
 
-  if (res.status === 401) {
-    yield put(logout());
+export const handleErrorResponse = (e) => {
+  const response = e.response || { data: {} };
+  const errorMessage = response.data.error_description || e.request.responseText;
+  return { ok: false, data: response.data, errorMessage };
+};
+
+export const handleSuccessResponse = resp => ({ ok: true, data: resp.data });
+
+export function* get(path, config = {}) {
+  try {
+    const resp = yield call(axios.get, fullUriForPath(path), config);
+    return handleSuccessResponse(resp);
+  } catch (e) {
+    return handleErrorResponse(e);
   }
-  return res;
 }
 
-const api = new API(BASE_URL).use(authMiddleware);
+export function* post(path, data, config = {}) {
+  try {
+    const resp = yield call(axios.post, fullUriForPath(path), data, config);
+    return handleSuccessResponse(resp);
+  } catch (e) {
+    return handleErrorResponse(e);
+  }
+}
 
-function* requestAuthToken(body) {
-  const resp = yield api.post('/oauth/token', body, {
-    headers: new Headers({
+export function* authorizedGet(path, config = {}) {
+  const token = yield select(getAuthToken);
+  const accessToken = token && token.access_token;
+  const headers = { ...(config.headers || {}), Authorization: `Bearer ${accessToken}` };
+  return yield call(get, path, { ...config, headers });
+}
+
+export function* requestAuthToken(body: string) {
+  return yield call(post, '/oauth/token', body, {
+    headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/json',
       Authorization: 'Basic d2ViOndlYg==',
-    }),
+    },
   });
-
-  if (resp.ok) {
-    return yield resp.json();
-  }
-  throw yield resp.json();
 }
 
-function* authorizeUser(username, password) {
+export function* authorizeUser(username: string, password: string) {
   const body = `username=${username}&password=${password}&grant_type=password&scope=SCOPE_APP_WEB`;
   return yield call(requestAuthToken, body);
 }
 
-function* refreshToken(token) {
-  const body = `grant_type=refresh_token&refresh_token=${token.refresh_token}&scope=${token.scope}`;
+export function* refreshToken(storedToken: AuthToken) {
+  const body = `grant_type=refresh_token&refresh_token=${storedToken.refresh_token}&scope=${storedToken.scope}`;
   return yield call(requestAuthToken, body);
 }
 
-function* fetchLoans(page: number): Loan[] {
-  const resp = yield api.get(
+export function* fetchLoans(page: number) {
+  return yield call(
+    // We actually don't have to call this endpoint with authorization I do it only for example.
+    authorizedGet,
     '/loans/marketplace?fields=id,name,story,photos,interestRate,rating,termInMonths,amount,investmentsCount,deadline,remainingInvestment',
-    null,
-    {
-      headers: new Headers({
-        'X-Page': page,
-        'X-Size': PAGE_SIZE,
-      }),
-    },
+    { headers: { 'X-Page': page, 'X-Size': PAGE_SIZE } },
   );
-
-  if (resp.ok) {
-    return yield resp.json();
-  }
-  throw yield resp.json();
 }
-
-export const fullUriForPath = path => `${BASE_URL}${path}`;
-
-export default { authorizeUser, refreshToken, fetchLoans };

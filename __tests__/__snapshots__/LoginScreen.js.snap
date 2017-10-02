@@ -5,6 +5,7 @@ exports[`renders correctly 1`] = `
   style={
     Object {
       "flex": 1,
+      "marginTop": 64,
       "paddingVertical": 20,
     }
   }
@@ -183,6 +184,7 @@ exports[`renders correctly 1`] = `
       >
         <TextInput
           onChangeText={[Function]}
+          secureTextEntry={true}
           selectionColor="#86939e"
           style={
             Array [
@@ -256,7 +258,7 @@ exports[`renders correctly 1`] = `
                 undefined,
                 undefined,
                 Object {
-                  "backgroundColor": "#03A9F4",
+                  "backgroundColor": "#e75637",
                 },
                 undefined,
                 Object {

@@ -13,13 +13,15 @@ import type {
 } from 'react-navigation/src/TypeDefinition';
 
 import type { Loan } from '../redux/sagas/api';
-import * as Strings from '../constants/strings';
-import * as Colors from '../constants/colors';
+import { fullUriForPath } from '../redux/sagas/api';
 import { percentage } from '../lib/utils';
 
 import NavBar from '../components/common/NavBar';
 import PropertyBox from '../components/common/PropertyBox';
 import LoanProgressView from '../components/common/LoanProgressView';
+
+import * as Strings from '../constants/strings';
+import * as Colors from '../constants/colors';
 
 const window = Dimensions.get('window');
 const PARALLAX_IMAGE_HEIGHT = 200;
@@ -45,7 +47,7 @@ class LoanDetailScreen extends React.PureComponent<void, Props, void> {
             <View style={{ backgroundColor: 'transparent' }}>
               <Image
                 source={{
-                  uri: loan.photoUri,
+                  uri: fullUriForPath(loan.photos[0].url),
                   width: window.width,
                   height: PARALLAX_IMAGE_HEIGHT,
                 }}
@@ -65,8 +67,6 @@ class LoanDetailScreen extends React.PureComponent<void, Props, void> {
           stickyHeaderHeight={64}
         >
           <View style={styles.contentContainer}>
-            <Text style={styles.title}>{loan.name.toUpperCase()}</Text>
-            <Text style={styles.story}>{loan.story}</Text>
             <LoanProgressView loan={loan} style={styles.progressContainer} />
             <View
               style={[styles.infoContainer, { justifyContent: 'space-around', marginBottom: 1 }]}
@@ -95,6 +95,8 @@ class LoanDetailScreen extends React.PureComponent<void, Props, void> {
                 color="white"
               />
             </View>
+            <Text style={styles.title}>{loan.name.toUpperCase()}</Text>
+            <Text style={styles.story}>{loan.story}</Text>
           </View>
         </ParallaxScrollView>
         <Icon
@@ -117,7 +119,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   contentContainer: {
-    height: 500,
     margin: 10,
   },
   title: {
