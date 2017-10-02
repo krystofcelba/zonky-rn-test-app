@@ -4,15 +4,20 @@
     "private": true,
     "scripts": {
         "start": "node node_modules/react-native/local-cli/cli.js start",
-        "test": "jest"
+        "test": "jest",
+        "remotedev": "remotedev --hostname=localhost --port=8000 --injectserver=reactnative"
     },
     "dependencies": {
-        "@shoutem/ui": "^0.21.3",
+        "isomorphic-fetch": "^2.2.1",
         "react": "16.0.0-alpha.12",
         "react-native": "0.48.3",
+        "react-native-elements": "^0.17.0",
+        "react-native-vector-icons": "^4.4.0",
         "react-navigation": "^1.0.0-beta.11",
         "react-redux": "^5.0.6",
         "redux": "^3.7.2",
+        "redux-saga": "^0.15.6",
+        "redux-saga-rest": "^0.2.3",
         "remote-redux-devtools": "^0.5.12"
     },
     "devDependencies": {
@@ -38,9 +43,14 @@
         "prettier": "^1.6.1",
         "prettier-eslint": "^8.0.0",
         "react-test-renderer": "16.0.0-alpha.12",
+        "redux-mock-store": "^1.3.0",
+        "redux-saga-test-plan": "^3.2.0",
         "remotedev-server": "^0.2.4"
     },
     "jest": {
-        "preset": "react-native"
+        "preset": "react-native",
+        "transformIgnorePatterns": [
+            "node_modules/(?!(jest-)?react-native|react-navigation)"
+        ]
     }
 }

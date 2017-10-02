@@ -8,5 +8,11 @@
     "editor.formatOnSave": true,
     "javascript.format.enable": false,
     "javascript.validate.enable": false,
-    "json.format.enable": false
+    "json.format.enable": false,
+    "gitflow4code.features": [
+        {
+            "name": "feature/login-page",
+            "base": "develop"
+        }
+    ]
 }

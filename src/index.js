@@ -1,14 +1,20 @@
 /* @flow */
 import React from 'react';
 import { Provider } from 'react-redux';
-import AppWithNavigationState from './containers/AppNavigator';
+// import AppWithNavigationState from './navigators/AppNavigator';
+import RootAppNavigator from './navigators/AppNavigator';
 
-import store from './redux/store';
+import configureStore from './redux/store';
+class App extends React.Component {
+  store = configureStore();
 
-const App = () => (
-  <Provider store={store}>
-    <AppWithNavigationState />
-  </Provider>
-);
+  render() {
+    return (
+      <Provider store={this.store}>
+        <RootAppNavigator />
+      </Provider>
+    );
+  }
+}
 
 export default App;
